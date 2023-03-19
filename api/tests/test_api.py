@@ -31,10 +31,7 @@ class TestIntegration(TestCase):
         app.config["UPLOAD_FOLDER"] = "/tmp"
 
         data = {"file": (open("tests/dog.jpeg", "rb"), "dog.jpeg")}
-        response = self.client.post(
-            "/predict",
-            data=data,
-        )
+        response = self.client.post("/predict", data=data,)
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(len(data.keys()), 3)
@@ -58,10 +55,7 @@ class TestIntegration(TestCase):
         data = {
             "report": "{'filename': 'test', 'prediction': 'test-pred', 'score': 1. }"
         }
-        response = self.client.post(
-            "/feedback",
-            data=data,
-        )
+        response = self.client.post("/feedback", data=data,)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(os.path.exists(settings.FEEDBACK_FILEPATH))
 

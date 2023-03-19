@@ -17,7 +17,6 @@ db = redis.Redis(
     host=settings.REDIS_IP, port=settings.REDIS_PORT, db=settings.REDIS_DB_ID
 )
 
-# TODO
 # Load your ML model and assign to variable `model`
 # See https://drive.google.com/file/d/1ADuBSE4z2ZVIdn66YDSwxKv-58U7WEOn/view?usp=sharing
 # for more information about how to use this model.
@@ -48,7 +47,7 @@ def predict(image_name):
         os.path.join(settings.UPLOAD_FOLDER, image_name), target_size=(224, 224)
     )
 
-    # We need to convert the image to a Numpy
+    #  We need to convert the image to a Numpy
     # array before sending it to the model
     x = image.img_to_array(img)
 
@@ -63,12 +62,11 @@ def predict(image_name):
     # Run model on batch of images
     preds = model.predict(x_batch)
 
-    decoded=decode_predictions(preds, top=1)
+    decoded = decode_predictions(preds, top=1)
 
-    class_name = decoded[0][0][1]
-    pred_probability = decoded[0][0][2]
+    _, class_name, pred_probability = decoded[0][0]
 
-    return class_name, pred_probability
+    return class_name, round(pred_probability, 4)
 
 
 def classify_process():
@@ -94,10 +92,13 @@ def classify_process():
         #   4. Store the results on Redis using the original job ID as the key
         #      so the API can match the results it gets to the original job
         #      sent
-        # Hint: You should be able to successfully implement the communication
-        #       code with Redis making use of functions `brpop()` and `set()`.
-        # TODO
-        raise NotImplementedError
+        _, job_data = db.brpop("app_queue")
+        job_data = json.loads(job_data)
+
+        prediction, score = predict(job_data["image_name"])
+        prediction_dict = {"prediction": prediction, "score": float(score)}
+
+        db.set(job_data["id"], json.dumps(prediction_dict))
 
         # Sleep for a bit
         time.sleep(settings.SERVER_SLEEP)

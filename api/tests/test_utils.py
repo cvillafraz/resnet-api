@@ -1,8 +1,9 @@
 import os
 from unittest import TestCase
 
-import utils
 from werkzeug.datastructures import FileStorage
+
+import utils
 
 
 class TestUtils(TestCase):
