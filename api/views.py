@@ -151,7 +151,7 @@ def feedback():
     # Store the reported data to a file on the corresponding path
     # already provided in settings.py module (settings.FEEDBACK_FILEPATH)
     if report:
-        with open(settings.FEEDBACK_FILEPATH, "a") as file:
+        with open(settings.FEEDBACK_FILEPATH, 'w') as file:
             file.write(report)
 
     # Don't change this line
