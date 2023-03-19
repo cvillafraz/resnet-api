@@ -1,5 +1,6 @@
-import settings
 from flask import Flask
+
+import settings
 from views import router
 
 app = Flask(__name__)

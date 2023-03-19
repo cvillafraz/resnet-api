@@ -1,7 +1,5 @@
 import os
 
-import settings
-import utils
 from flask import (
     Blueprint,
     current_app,
@@ -12,6 +10,9 @@ from flask import (
     request,
     url_for,
 )
+
+import settings
+import utils
 from middleware import model_predict
 
 router = Blueprint("app_router", __name__, template_folder="templates")
@@ -149,9 +150,9 @@ def feedback():
 
     # Store the reported data to a file on the corresponding path
     # already provided in settings.py module (settings.FEEDBACK_FILEPATH)
-    # TODO
     if report:
-        raise NotImplementedError
+        with open(settings.FEEDBACK_FILEPATH, "a") as file:
+            file.write(report)
 
     # Don't change this line
     return render_template("index.html")
